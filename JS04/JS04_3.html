@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<script type="text/javascript">
+
+		var cvs;
+		var ctx;
+		var svg;
+
+		window.onload = function() {
+			cvs = document.getElementById("cvs");
+			// cvs.addEventListener("mousedown", mousedownCanvas);
+			ctx = cvs.getContext("2d");
+
+			svg = document.getElementById("svg");
+			svg.addEventListener("mousedown", mousedownSvg)
+			svg.style.left = cvs.offsetLeft + "px";
+			svg.style.top = cvs.offsetTop + "px";
+		}
+
+		// function mousedownCanvas(e) {
+		function mousedownSvg(e) {
+			var startX = e.clientX - cvs.offsetLeft;
+			var startY = e.clientY - cvs.offsetTop;
+			var rect = document.createElementNS(
+				"http://www.w3.org/2000/svg",
+				"rect")
+
+			svg.appendChild(rect);		// Add This!
+
+			var move = function(e) {
+				var endX = e.clientX - cvs.offsetLeft;
+				var endY = e.clientY - cvs.offsetTop;				
+
+				var width = Math.abs(endX - startX);
+				var x = endX>startX?startX:endX;
+				
+				// if (encX > startX) {
+				// 	x = startX;
+				// } else {
+				// 	x = endX;
+				// };
+
+				var height = Math.abs(endY - startY);
+				var y = endY>startY?startY:endY;
+
+				rect.setAttribute("x", x);
+				rect.setAttribute("y", y);
+				rect.setAttribute("width", width);
+				rect.setAttribute("height", height);
+
+				// ctx.fillRect(startX, startY, endX - startX + 1, endY - startY + 1);	
+			};
+
+			var end = function(e) {				
+				var endX = e.clientX - cvs.offsetLeft;
+				var endY = e.clientY - cvs.offsetTop;
+
+				var width = Math.abs(endX - startX);
+				var x = endX > startX ? startX : endX;
+				var height = Math.abs(endY - startY);
+				var y = endY > startY ? startY : endY;
+
+				ctx.fillRect(x, y, width, height);
+				// ctx.fillRect(startX, startY, endX - startX + 1, endY - startY + 1);
+				
+				// 移除 svg 方形
+				svg.removeChild(rect);
+
+				document.removeEventListener("mousemove", move); // 把事件處理器移除
+				document.removeEventListener("mouseup", end);				
+			};
+
+			document.addEventListener("mousemove", move);
+			document.addEventListener("mouseup", end);
+		}
+
+		function loadFile(input) {
+			var file = input.files[0]; // multi-selection;
+			// console.log(file); // Chrome -> F12 -> Console
+			var url = URL.createObjectURL(file);
+			var img = new Image();
+			img.src = url;
+			img.onload = function (){
+				cvs.width = this.width;
+				cvs.height = this.height;
+
+				svg.width = this.width;
+				svg.height = this.height;
+
+				ctx.drawImage(this, 0, 0);
+			}
+			// alert(url);
+		} 
+
+		function openFile() {
+			var fileInput = document.getElementById("file-input");
+			fileInput.click(); // 摸擬點擊的動作
+		}
+
+	</script>
+</head>
+
+<body>
+<button onclick="openFile();">Open</button>
+<input id="file-input" type="file" onchange="loadFile(this)" style="display:none" /> 
+
+<hr>
+
+<canvas id="cvs" style="border:1px solid black" width="800" height="600" />
+	
+</canvas>
+
+<svg id="svg" width="800" height="600" style="position:absolute; border:1px solid black"></svg>
+
+</body>
+
+</html>

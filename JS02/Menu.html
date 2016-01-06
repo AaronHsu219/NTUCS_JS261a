@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Menu</title>
+	<script type="text/javascript" src="jquery.js"></script>
+	
+	<script type="text/javascript">
+	
+	$(document).ready(function(){
+		//程式的初始化
+		$(".menu>.title").on("click", toggle);
+	});
+
+	function toggle(){
+		$(this).next().toggle();
+	}
+
+	</script>
+	
+	<style type="text/css">
+		.menu{line-height:30px}
+		.menu>.title{font-weight:bold}
+		.menu>.items{margin-left:20px}
+	</style>
+
+</head>
+<body>
+
+<div class="menu">
+	<div class="title">Javascript</div>
+	<div class="items">
+		<div class="item">Basic</div>
+		<div class="item">Advanced</div>		
+	</div>
+</div>
+
+<div class="menu">
+	<div class="title">PHP</div>
+	<div class="items">
+		<div class="item">Basic</div>
+		<div class="item">Advanced</div>
+	</div>
+</div>
+
+</body>
+</html>

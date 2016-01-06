@@ -1,0 +1,14 @@
+{
+	"Seti_no_bar_undertabs": true,
+	"Seti_tabs_small": true,
+	"color_scheme": "Packages/Seti_UI/Scheme/Seti.tmTheme",
+	"font_size": 15,
+	"word_wrap": false,
+	"ignored_packages":
+	[
+		"Vintage"
+	],
+	"tab_size": 2,
+	"theme": "Seti_orig.sublime-theme",
+	"word_wrap": "false"
+}

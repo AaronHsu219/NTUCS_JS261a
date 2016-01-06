@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<script type="text/javascript">
+	window.onload = function () {
+		var	cvs = document.getElementById("cvs");
+		var ctx = cvs.getContext("2d");
+		var img = new Image();
+		img.src = "about.png";
+		img.onload = function () {
+			ctx.drawImage(this, 100, 100);
+		};
+		// ctx.drawImage(圖片來源，x座標，y座標);
+		// ctx.drawImage(圖片來源, 100, 100);
+	};
+	</script>
+</head>
+<body>
+<canvas width="800" height="600" id="cvs"> </canvas>
+
+</body>
+</html>

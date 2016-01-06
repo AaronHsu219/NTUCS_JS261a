@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Menu</title>
+	<script type="text/javascript" src="jquery.js"></script>
+	
+	<script type="text/javascript">
+	
+	$(document).ready(function(){
+		//程式的初始化
+		$(".menu>.title").on("click", toggle);
+	});
+
+	function toggle(){
+		// $(this).next().toggle();
+		$(this).next().slideToggle();
+	}
+
+	function getContent(argument) {
+		var req = new XMLHttpRequest();
+		req.open("get", "docs/basic.html");
+
+		req.onload = function() {
+			//# Traditional
+			// var main = document. getElementById("main")
+			// main.innerHTML = this.responseText;
+
+			//# jquery
+			$("#main").html(this.responseText);
+		};
+		
+		req.send();
+	}
+
+	</script>
+	
+	<style type="text/css">
+		.sidebar{float:left; width:20%;}
+		.main{float:right; width:78%; background-color: #eeeeee}
+
+		.menu{line-height:30px}
+		.menu>.title{font-weight:bold}
+		.menu>.items{margin-left:20px}
+	</style>
+
+</head>
+<body>
+
+<div class="sidebar">
+
+<div class="menu">
+	<div class="title">Javascript</div>
+	<div class="items">
+		<div class="item" onclick="getContent();">Basic</div>
+		<div class="item">Advanced</div>
+		<div class="item">
+			<div class="menu">
+			<div class="title">Homework</div>
+			<div class="items">
+				<div class="item">HW1</div>
+				<div class="item">Hw2</div>
+			</div>
+			</div>			
+		</div>
+	</div>
+</div>
+
+<div class="menu">
+	<div class="title">PHP</div>
+	<div class="items">
+		<div class="item">Basic</div>
+		<div class="item">Advanced</div>
+	</div>
+</div>
+
+</div>
+
+<div class="main" id="main">hello</div>
+
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<script type="text/javascript">
+
+		var cvs;
+		var ctx;
+
+		window.onload = function () {
+			cvs = document.getElementById("cvs");
+			cvs.addEventListener("mousedown", mousedownCanvas);
+			ctx = cvs.getContext("2d");
+		}
+
+		function mousedownCanvas(e) {
+			var startX = e.clientX - cvs.offsetLeft;
+			var startY = e.clientY - cvs.offsetTop;
+			
+			var move = function (e) {
+				var endX = e.clientX - cvs.offsetLeft;
+				var endY = e.clientY - cvs.offsetTop;
+				ctx.fillRect(startX, startY, endX - startX + 1, endY - startY + 1);				
+			};
+
+			var end = function (e) {				
+				var endX = e.clientX - cvs.offsetLeft;
+				var endY = e.clientY - cvs.offsetTop;
+				ctx.fillRect(startX, startY, endX - startX + 1, endY - startY + 1);
+
+				document.removeEventListener("mousemove", move); // 把事件處理器移除
+				document.removeEventListener("mouseup", end);				
+			};
+
+			document.addEventListener("mousemove", move);
+			document.addEventListener("mouseup", end);
+		}
+
+
+		function loadFile(input) {
+			var file = input.files[0]; // multi-selection;
+			// console.log(file); // Chrome -> F12 -> Console
+			var url = URL.createObjectURL(file);
+			var img = new Image();
+			img.src = url;
+			img.onload = function (){
+				cvs.width = this.width;
+				cvs.height = this.height;
+				ctx.drawImage(this, 0, 0);
+			}
+			// alert(url);
+		} 
+		function openFile() {
+			var fileInput = document.getElementById("file-input");
+			fileInput.click(); // 摸擬點擊的動作
+		}
+
+	</script>
+</head>
+
+<body>
+<button onclick="openFile();">Open</button>
+<input id="file-input" type="file" onchange="loadFile(this)" style="display:none" /> 
+
+<hr>
+
+<canvas style="border:1px solid black" 
+	width="800" height="600" id="cvs">
+	
+</canvas>
+
+</body>
+
+</html>

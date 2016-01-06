@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Ply Framework</title>
+	<meta charset = "utf-8" />
+	<script type="text/javascript" src="jquery.js">	</script>
+	
+	<script type="text/javascript">
+
+	function init(){
+			var handler = function(){
+				$(this).fadeOut();
+			};
+			$("button").on("click", handler);	
+	}
+
+	$(document).ready(init);
+
+	</script>
+
+</head>
+<body>
+	<button>Click 1</button>
+	<button>Click 2</button>
+</body>
+</html>
+

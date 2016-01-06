@@ -1,0 +1,40 @@
+<html>
+<head>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+<script type="text/javascript">
+var CLIENT_ID = '使用您的 Client ID';
+var SCOPES = 'https://www.googleapis.com/auth/drive';
+function init(){
+	// 偵測使用者是否已授權
+	gapi.auth.authorize(
+		{'client_id': CLIENT_ID, 'scope': SCOPES, 'immediate': true},
+		handleAuthResult);
+}
+function handleAuthResult(authResult){
+	var login = document.getElementById('login-div');
+	var main = document.getElementById('main-div');
+	login.style.display = 'none';
+	main.style.display = 'none';
+	if(authResult && !authResult.error){ // 使用者已授權
+		// Access token has been successfully retrieved, requests can be sent to the API.
+		main.style.display = 'block';
+	}else{ // 使用者未授權
+		// No access token could be retrieved, show the button to start the authorization flow.
+		login.style.display = 'block';
+	}
+}
+function login(){
+	gapi.auth.authorize(
+		{'client_id': CLIENT_ID, 'scope': SCOPES, 'immediate': false},
+		handleAuthResult);
+}
+</script>
+<script type="text/javascript" src="https://apis.google.com/js/client.js?onload=init"></script>
+</head>
+<body>
+<div id="login-div" style="display:none;">
+	<input type="button" value="Login" onclick="login();" />
+</div>
+<div id="main-div" style="display:none;">OK</div>
+</body>
+</html>

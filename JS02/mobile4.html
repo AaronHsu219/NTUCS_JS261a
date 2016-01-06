@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Menu</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<script type="text/javascript" src="jquery.js"></script>
+	
+	<script type="text/javascript">
+		
+		$(document).ready(function(){
+			window.addEventListener("hashchange", function(){
+				// alert(document.location.hash);
+				changePage(document.location.hash);
+			});
+			// changePage("#page1");
+			changePage(document.location.hash);
+		});
+
+		var currentPage = null;  // Global variable
+
+		function changePage(hash) {			
+			// 把當前頁面藏起來
+			if(currentPage != null){
+				currentPage.style.display = "none";
+			}
+			
+			// 取得page Id
+			var pageId;
+			if (hash == "") {
+				pageId = "page1";				
+			} else {
+				pageId = hash.substring(1);
+			};
+
+			// 更新當前頁面，display
+			var pageId = hash.substring(1);
+			currentPage = document.getElementById(pageId)			;
+			currentPage.style.display = "block";
+		}
+
+	</script>
+	
+	<script type="text/css"></script>
+	
+	<style type="text/css">
+		.page{display:;}
+	</style>
+
+</head>
+<body>
+
+<!-- 
+	1. 利用超連結做頁面的切換
+	2. 每個頁面應該要有獨立的網址
+-->
+
+<div id="page1" class="page">
+	Page 1
+	<a href="#page2">Go to Page 2</a>
+</div>
+
+<!-- <div style="height:1000px"></div> -->
+
+<div id="page2" class="page">
+	Page 2
+	<a href="#page1">Go to Page 1</a>
+</div>
+
+<!-- <div style="height:1000px"></div> -->
+
+</body>
+</html>

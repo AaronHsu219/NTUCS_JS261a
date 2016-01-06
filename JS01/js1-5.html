@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>js1-1</title>
+
+	<script type="text/javascript">
+
+	// var obj = new Object();
+	// obj.x = 3;
+	// obj.y = 4;
+	// obj.getPosition = function(){
+	// 	alert(this.x + "," + this.y)
+	// };
+
+// js03 - JavaScript Object Notation
+	// var obj = {"x":3, "y":4 "getPosition":function(){
+	// 	alert(this.x + "," + this.y);
+	// }}; // new object
+
+/*
+	args是第一個參數：物件
+	{n1:數字 , n2:數字}
+*/
+
+function test(n /* 數字 */, f /* 函式 */){
+	f(n*n);
+}
+
+var callback = function(result){
+	alert(result);
+};
+
+test(3, callback);
+
+
+/* the newest way (jason)*/
+// function add(args){
+// 	alert(args.n1 + args.n2);
+// }
+
+// add({"n1":5, "n2":3});
+
+
+/* newer fasion way...*/
+// function add(args){
+// 	alert(args.n1 + args.n2);
+// }
+
+// var obj = new Object();
+// obj.n1=5;
+// obj.n2=5;
+// add(obj)
+
+/* old fasion way*/
+// function add(n1, n2){
+// 	alert(n1 + n2);
+// }
+
+// add(3,4)
+
+
+
+	//===================================================== 
+	// Constructor??
+	// var lib = new Object(); //包裝 //類別庫
+
+	// lib.Point = function Point(x, y){
+	// 	this.x = x;
+	// 	this.y = y;
+	// 	this.getPosition = function(){
+	// 		alert(this.x + "," + this.y)
+	// 	}
+	// }
+	// var obj = new Point(3,4);
+
+	</script>
+</head>
+<body>
+
+</body>
+</html>

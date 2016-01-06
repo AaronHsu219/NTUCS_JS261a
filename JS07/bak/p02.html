@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Particles System</title>
+	<script type="text/javascript">
+	
+	var ctx;
+	var circles;
+
+	window.onload = function() {
+		ctx = document.getElementById("cvs").getContext("2d");
+		circles = []; // []相當於 new Array()
+		window.setInterval(refresh, 20);
+	}
+
+	function refresh() {
+		if (circles.length < 100) {
+			circles.push(new Circle());
+		};
+
+		// 更新物件的資料
+		for (var i = 0; i < circles.length; i++) {
+			if (circles[i].update()) {
+				// 死亡，刪除物件
+				circles.splice(i, 1);
+				i--;
+			};						
+		};
+
+		// 清空畫面
+		ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+
+		// 重畫所有物件
+		for (var i = 0; i < circles.length; i++) {
+			circles[i].draw();
+		};
+
+
+	}
+
+	function Circle() {
+		this.x = 50;
+		this.y = 50;
+		this.vx = 5;
+		this.vy = Math.random()*4 + 1;	// 1~5
+
+		this.update = function() {
+			this.x += this.vx;
+			this.y += this.vy;
+			// 回傳此物件是否已經死亡(要被回收)
+			return this.x > ctx.canvas.width || this.y > ctx.canvas.height;
+		};
+		
+		this.draw = function() {
+			ctx.save(); // 儲存當前設定
+			ctx.beginPath();
+			ctx.arc(this.x, this.y, 10, 0, Math.PI*2)
+			ctx.fill();
+
+			ctx.restore(); // 恢復之前儲存的設定
+
+		};
+	}
+
+	</script>
+</head>
+<body>
+<canvas id="cvs" width="800" height="600" style="border:1px solid black"></canvas>
+</body>
+</html>

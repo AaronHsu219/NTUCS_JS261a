@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>JQuery</title>
+	<meta charset = "utf-8" />
+	<script type="text/javascript" src="jquery.js">	</script>
+	
+	<script type="text/javascript">
+	window.onload = function() {
+		var $list = $("#favorite>.item");  //階層式
+		// $list.fadeOut();
+		$list.css("font-weight","bold");
+		$list.css("font-weight"); // 取得第一個元件特性
+	}
+	</script>
+
+<style type="text/css">
+	.item{color:#666666;}	
+</style>
+
+</head>
+<body>
+
+<h3>我的最愛</h3>
+<ul id="favorite">
+	<li class="item"><a target="_blank" href="http://www.facebook.com">Facebook</a></li>
+	<li class="item"><a target="_blank" href="http://www.google.com">Google</a></li>
+</ul>
+
+<h3>好玩遊戲</h3>
+<ul id="game">
+	<li class="item">文明帝國五</li>
+	<li class="item">英雄聯盟</li>
+</ul>
+
+</body>
+</html>

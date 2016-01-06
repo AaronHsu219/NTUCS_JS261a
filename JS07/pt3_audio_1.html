@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Particles System</title>
+	<script type="text/javascript">
+	
+	var ga = {
+		"data":{"ctx":null, "drawables":null, "circles": 0}, 
+		"lib":{}
+	};
+	
+	window.onload = function() {
+		// ctx = document.getElementById("cvs").getContext("2d");		
+		ga.data.ctx = document.getElementById("cvs").getContext("2d");
+		ga.data.drawables = [];
+		window.setInterval(ga.refresh, 25);
+	}
+
+	ga.refresh = function() {
+		if(ga.data.circles%3 == 0){
+			ga.data.drawables.push(new ga.lib.Bullet());			
+		}
+		// 更新資料
+		for (var i = 0; i < ga.data.drawables.length; i++) {
+			if(ga.data.drawables[i].update()){
+				ga.data.drawables.splice(i,1);
+				i--;
+			}		
+		}
+		// 重繪物件
+		ga.data.ctx.fillRect(0, 0,
+			ga.data.ctx.canvas.width, ga.data.ctx.canvas.height);
+
+		for (var i = 0; i < ga.data.drawables.length; i++) {
+			ga.data.drawables[i].draw();
+		}
+		// 回合數
+		ga.data.circles++;
+	}
+
+	ga.lib.Bullet = function() {
+		var seed = Math.random();
+		if(seed < 0.25){ //  左
+			this.x = 0;
+			this.y = Math.random()*ga.data.ctx.canvas.height;
+			this.vx = Math.random()*2 + 2; // 2 ~ 4
+			this.vy = Math.random()*4 - 2; // -2 ~ 2
+			this.size;			
+		}else if(seed < 0.5){ // 上
+			this.x = Math.random()*ga.data.ctx.canvas.width;
+			this.y = 0;
+			this.vx = Math.random()*4 - 2; // -2 ~ 2
+			this.vy = Math.random()*2 + 2; // 2~4 
+		}else if(seed < 0.75){ // 右
+			this.x = ga.data.ctx.canvas.width;
+			this.y = Math.random()*ga.data.ctx.canvas.width;
+			this.vx = Math.random()*2 - 4; // -2 ~ -4
+			this.vy = Math.random()*4 - 2; // -2 ~ 2			
+		}else{ // 下
+			this.x = Math.random()*ga.data.ctx.canvas.width;
+			this.y = ga.data.ctx.canvas.width;
+			this.vx = Math.random()*4 - 2; // -2 ~ -2
+			this.vy = Math.random()*2 - 4; // -2 ~ -4					
+		}		
+		this.size = 5;
+		
+		this.update = function() {
+			this.x += this.vx;
+			this.y += this.vy;
+			return this.x < 0 || this.x > ga.data.ctx.canvas.width ||
+						 this.y < 0 || this.y > ga.data.ctx.canvas.height;
+		};
+
+		this.draw = function() {
+			var ctx = ga.data.ctx;
+			ctx.save();
+			ctx.fillStyle = "#ffffff";
+			ctx.beginPath();
+			ctx.arc(this.x, this.y, this.size, 0, 2*Math.PI);
+			ctx.fill();
+			ctx.restore();
+		};
+	};
+
+	</script>
+</head>
+
+<body>
+
+<canvas id="cvs" width="800" height="600" style="border:1px solid black"></canvas>
+
+</body>
+</html>
+

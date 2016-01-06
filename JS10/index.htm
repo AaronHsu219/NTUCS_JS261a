@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Parse</title>
+<script type="text/javascript" src="http://www.parsecdn.com/js/parse-latest.js"></script>
+<script type="text/javascript">
+var currentUser;
+window.onload=function(){
+	Parse.initialize("APP ID", "Javascript Key");
+	initCurrentUser();
+	updateBoard();
+};
+function initCurrentUser(){
+	currentUser=Parse.User.current();
+	if(currentUser==null){ // 未登入
+		document.getElementById("entry").style.display="block";
+		document.getElementById("member").style.display="none";
+	}else{ // 已登入
+		document.getElementById("entry").style.display="none";
+		document.getElementById("member").style.display="block";
+		document.getElementById("welcome").innerHTML=
+			"Hello "+currentUser.get("name");
+	}
+}
+function signup(f){
+	var user=new Parse.User();
+	user.set("username", f.email.value);
+	user.set("password", f.password.value);
+	user.set("name", f.name.value);
+	user.signUp(null, {
+		success:function(user){
+			initCurrentUser();
+		},
+		error:function(user, error){
+			alert("Error");
+		}
+	});
+}
+function signin(f){
+	Parse.User.logIn(f.email.value, f.password.value, {
+		success:function(user){
+			initCurrentUser();
+		},
+		error:function(user, error){
+			alert("Error");
+		}
+	});
+}
+function logout(){
+	Parse.User.logOut();
+	initCurrentUser();
+}
+function updateBoard(){
+	var Message=Parse.Object.extend("Message");
+	var query=new Parse.Query(Message);
+	query.descending("createdAt");
+	query.find({
+		success:function(results){
+			var board=document.getElementById("board");
+			board.innerHTML="";
+			for(var i=0;i<results.length;i++){
+				board.innerHTML+="<div>"+results[i].get("name")+
+					":"+results[i].get("message")+"</div>";
+			}
+		},
+		error:function(error){
+			alert("Error");
+		}
+	});
+}
+function postMessage(msg){
+	var Message=Parse.Object.extend("Message");
+	var message=new Message();
+	message.set("name", currentUser.get("name"));
+	message.set("message", msg);
+	message.save(null, {
+		success:function(message){
+			alert("Success");
+			updateBoard();
+		},
+		error:function(message, error){
+			alert("Error");
+		}
+	});
+}
+</script>
+</head>
+<body>
+<div id="entry">
+	<h3>Sign Up</h3>
+	<form onsubmit="signup(this);return false;">
+		Email <input type="text" name="email" />
+		Password <input type="password" name="password" />
+		Name <input type="text" name="name" />
+		<input type="submit" value="Sign Up" />
+	</form>
+
+	<h3>Sign In</h3>
+	<form onsubmit="signin(this);return false;">
+		Email <input type="text" name="email" />
+		Password <input type="password" name="password" />
+		<input type="submit" value="Sign In" />
+	</form>
+</div>
+<div id="member">
+	<div id="welcome"></div>
+	<form onsubmit="postMessage(this.message.value);return false;">
+		Message <textarea name="message"></textarea>
+		<input type="submit" value="Post" />
+	</form>
+	<button onclick="logout();">Log Out</button>
+</div>
+<hr/>
+<div id="board"></div>
+</body>
+</html>
+
+
+
+
+

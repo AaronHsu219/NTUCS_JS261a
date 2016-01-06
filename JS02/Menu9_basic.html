@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Menu</title>
+	<script type="text/javascript" src="jquery.js"></script>
+	
+	<script type="text/javascript">
+	
+	$(document).ready(function(){
+		// 程式的初始化區塊
+		// 收合選單用 
+		$(".menu>.title").on("click", toggle);
+		// 建立內容連線用
+		$(".menu>.items>.item").on("click", getContent)
+	});
+
+	function toggle(){
+		// $(this).next().toggle();
+		var options = new Object();
+		options.duration = 100;
+		options.complete = function(){
+			alert("Completed")
+		}
+
+		$(this).next().slideToggle(options);
+	}
+
+	function getContent(argument) {
+
+		var file = $(this).attr("data-file");
+		// alert(file); // # debug
+
+		if(file){
+			var req = new XMLHttpRequest();
+			req.open("get", "docs/" + file);
+			req.onload = function() {
+				$("#main").html(this.responseText);
+			};		
+			req.send();
+		}
+	}
+
+	</script>
+	
+	<style type="text/css">
+		.sidebar{float:left; width:20%;}
+		.main{float:right; width:78%; background-color: #eeeeee}
+
+		.menu{line-height:30px}
+		.menu>.title{font-weight:bold}
+		.menu>.items{margin-left:20px}
+	</style>
+
+</head>
+<body>
+
+<div class="sidebar">
+
+<div class="menu">
+	<div class="title">Javascript</div>
+	<div class="items">
+		<div class="item" data-file="basic.html">Basic</div>
+		<div class="item" data-file="advanced.html">Advanced</div>
+		<div class="item">
+			<div class="menu">
+			<div class="title">Homework</div>
+			<div class="items">
+				<div class="item">HW1</div>
+				<div class="item">Hw2</div>
+			</div>
+			</div>			
+		</div>
+	</div>
+</div>
+
+<div class="menu">
+	<div class="title">PHP</div>
+	<div class="items">
+		<div class="item">Basic</div>
+		<div class="item">Advanced</div>
+	</div>
+</div>
+
+</div>
+
+<div class="main" id="main">hello</div>
+
+</body>
+</html>

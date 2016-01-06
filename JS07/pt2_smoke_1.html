@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Particles System</title>
+	<script type="text/javascript">
+	
+	var ctx;
+	var drawables;
+	var smoke;
+
+	window.onload = function() {
+		ctx = document.getElementById("cvs").getContext("2d");		
+		drawables = []; // []相當於 new Array()
+		smoke = new Image();
+		smoke.src = "training99/particle-smoke.png";
+		smoke.onload = function() {
+			window.setInterval(refresh, 20);
+		};		
+	}
+
+	function clickCvs(e) {
+		var x = e.clientX - ctx.canvas.offsetLeft;
+		var y = e.clientY - ctx.canvas.offsetTop;
+		drawables.push(new Rect(x, y));
+	}
+
+	function refresh() {
+		if (drawables.length < 100) {
+			drawables.push(new Smoke());
+		};
+
+		// 更新物件的資料
+		for (var i = 0; i < drawables.length; i++) {
+			if (drawables[i].update()) {
+				// 死亡，刪除物件
+				drawables.splice(i, 1);
+				i--;
+			};
+
+		};
+
+		// 清空畫面
+		ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+
+		// 重畫所有物件
+		for (var i = 0; i < drawables.length; i++) {
+			drawables[i].draw();
+		};
+
+
+	}
+
+	function Smoke() {
+		this.x = 400;
+		this.y = 550;
+		this.vx = Math.random()*2 - 1;	// -1 ~ 1
+		this.vy = Math.random()*2 - 4;	// -2 ~ -4
+		this.size = 20;
+		this.alpha = 0.2;
+		
+		this.update = function() {
+			this.x += this.vx + parseFloat(document.getElementById("wind").value);
+			this.y += this.vy;
+			this.size += 1;
+			this.alpha = 0.05;  // this.alpha -= 0.05;  
+			return this.y < -100;
+		}
+
+		this.draw = function() {
+			ctx.save();
+			ctx.globalAlpha = this.alpha;
+			ctx.drawImage(smoke, this.x - this.size/2, this.y - this.size/2,
+				this.size, this.size);
+
+			ctx.restore();
+		}
+	}
+
+	function Rect(x, y) {
+		this.x = x;
+		this.y = y;
+		this.vy = -5;
+
+		this.update = function() {
+			this.y += this.vy;
+			return this.y < 0;			
+		}
+
+		this.draw = function() {
+			ctx.save();
+			ctx.fillStyle = "red";
+			ctx.fillRect(this.x, this.y, 10, 10);
+			ctx.restore();
+		}
+	}
+
+	</script>
+</head>
+<body>
+<input id = "wind" type="range" min="-10" max="10" steip="0.5" value="0" />
+<canvas id="cvs" width="800" height="600" style="border:1px solid black"></canvas>
+</body>
+</html>
+

@@ -1,0 +1,8 @@
+電腦教室之伺服器環境
+c:\appserv\www\
+對外的網址
+http://localhost:8080
+
+使用範例
+把網頁放在 c:\appserv\www\index.htm
+就可在browser中連線 http://localhost:8080/index.htm

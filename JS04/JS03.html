@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<script type="text/javascript">
+
+	window.onload = function () {
+		
+	}
+
+	function Create() {		
+		var x1 = parseInt(document.getElementById("x1").value);
+		var y1 = parseInt(document.getElementById("y1").value);
+		var x2 = parseInt(document.getElementById("x2").value);
+		var y2 = parseInt(document.getElementById("y2").value);
+		// <line x1="" y1="" x2=" " y2=" " stroke="blue" stroke-width = "2"></line>
+							 	 
+
+		var line = document.createElementNS(   // use "createElementNS" ; namespace(NS)
+								"http://www.w3.org/2000/svg",
+								"line");
+		line.setAttribute("x1", x1);
+		line.setAttribute("y1", y1);
+		line.setAttribute("x2", x2);
+		line.setAttribute("y2", y2);
+		line.setAttribute("stroke", "blue");
+		line.setAttribute("stroke-width", 2);
+
+		var svg = document.getElementById("svg");
+		svg.appendChild(line);
+	}
+
+	</script>                       
+</head>
+<body>
+
+x1 <input type="text" id="x1" /><br/>
+y1 <input type="text" id="y1" /><br/>
+x2 <input type="text" id="x2" /><br/>
+y2 <input type="text" id="y2" /><br/>
+<button onclick="Create()";>Create</button>
+
+<svg width="800" height="600" id="svg"></svg>
+
+</body>
+
+</html>

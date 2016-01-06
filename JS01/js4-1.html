@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Ply Framework</title>
+	<meta charset = "utf-8" />
+	<script type="text/javascript" src="jquery.js">	</script>
+	
+	<script type="text/javascript">
+
+	window.onload = function() {
+		$(".ply-title")
+			.css("font-size","25px")
+			.css("font-weight","bold");
+
+		$(".ply-circle")
+			.css("width","50px")
+			.css("height","50px")
+			.css("border-radius","25px")
+			.css("background-color","black");	
+
+		$(".ply-big")
+			.css("width","150px")				
+			.css("height","150px");				
+	}
+
+	</script>
+
+</head>
+<body>
+
+	<div class="ply-title">這是標題</div>
+	<div class="ply-circle ply-big"></div>
+	<div class="ply-circle ply-big"></div>
+	<div class="ply-circle"></div>
+	<div class="ply-draggable"></div>
+
+</body>
+</html>

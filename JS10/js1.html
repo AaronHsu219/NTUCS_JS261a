@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Parse</title>
+	 <script type="text/javascript" src="http://www.parsecdn.com/js/parse-latest.js"></script>
+	 <script type="text/javascript">
+
+	 window.onload=function () {
+	 	// Initialize
+	 	Parse.initialize("NvyVEBki02LW4l0U39kYZCeh55xfRkFkphrV5HXv", "4ugaRnDC1YgoNe7otwuX7UETEMTBxs9BGDyErNuX");
+	 };
+
+	 function signup(f) {
+	 	// f.email.value;
+	 	// f.password.value;
+	 	// f.name.value;
+	 	var user = new Parse.User();
+	 	user.set("username", f.email.value);
+	 	user.set("password", f.password.value);
+	 	user.set("name", f.name.value);
+	 	user.signUp(null,{
+	 		success: function() {
+	 			alert("Success");
+	 		},
+	 		error: function() {
+	 			alert("Error");
+	 		}
+	 	});
+
+	 }
+
+	 </script>
+</head>
+<body>
+<h3>Sign Up</h3>
+
+<form onsubmit="signup(this);return false;">
+
+	Email <input type="text" name="email" />
+	Password <input type="password" name="password" />
+	Name <input type="text" name="name" />
+	<input type="submit" value="Sign up" />
+
+</form>
+
+</body>
+</html>

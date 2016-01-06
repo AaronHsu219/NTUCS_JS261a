@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Ply Framework</title>
+	<meta charset = "utf-8" />
+	<script type="text/javascript" src="jquery.js">	</script>
+	
+	<script type="text/javascript">
+
+	window.onload = function() {
+		
+		var handler = function(){
+			// alert(this.innerHTML)
+			var jqueryThis = $(this);
+			alert(jqueryThis.html());
+		};
+
+		$("button").on("click", handler)
+	}
+
+/* 事件註冊 */
+
+	</script>
+
+</head>
+<body>
+	<button>Click 1</button>
+	<button>Click 2</button>
+</body>
+</html>
+

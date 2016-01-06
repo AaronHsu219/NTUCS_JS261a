@@ -1,0 +1,321 @@
+<html>
+<head>
+<title>Game</title>
+<script>
+var ga={
+	"res":{
+		"loaded":0, "total":3,
+		"imgs":{"plane":"plane.png", "explosion":"explosion.png"},
+		"sounds":{"explosion":"explosion.mp3"}
+	},
+	"ctx":null, "audio":null, "data":{},
+	"drawable":[], "lib":{}, "evt":{},
+	"control":{"left":false, "top":false, "right":false, "bottom":false, "space":false, "enter":false}};
+window.onload=function(){
+	ga.ctx=document.getElementById("cvs").getContext("2d");
+	ga.audio=new AudioContext();
+	ga.loadResources();
+};
+ga.loadResources=function(){
+	// 載入資源
+	ga.loadImages();
+	ga.loadSounds(["explosion"]);
+};
+	ga.loadSounds=function(names){
+		if(names.length==0){
+			return;
+		}
+		var name=names.pop();
+		var req=new XMLHttpRequest();
+		req.open("get", ga.res.sounds[name]);
+		req.responseType="arraybuffer";
+		req.onload=function(){
+			ga.audio.decodeAudioData(this.response, function(buffer){
+				ga.res.sounds[name]=buffer;
+				ga.res.loaded++;
+				ga.loadedResource();
+				ga.loadSounds(names);
+			});
+		};
+		req.send();
+	};
+	ga.loadImages=function(){
+		for(var name in ga.res.imgs){
+			var img=new Image();
+			img.src=ga.res.imgs[name];
+			img.onload=function(){
+				ga.res.loaded++;
+				ga.loadedResource();
+			};
+			ga.res.imgs[name]=img;
+		}
+	};
+	ga.loadedResource=function(){
+		var div=document.getElementById("loading");
+		var percent=100*ga.res.loaded/ga.res.total;
+		div.innerHTML="Loading ... "+percent+"%";
+		if(ga.res.loaded==ga.res.total){
+			// 進入主畫面
+			ga.ready();
+		}
+	};
+ga.playSound=function(buffer){
+	var source=ga.audio.createBufferSource();
+	source.buffer=buffer;
+	source.connect(ga.audio.destination);
+	source.start(0);
+};
+ga.ready=function(){
+	document.getElementById("loading").style.display="none";
+	document.getElementById("menu").style.display="block";
+};
+ga.start=function(){
+	// 初始化回合數
+	ga.data.circle=0;
+	// 遊戲開始
+	ga.gameId=window.setInterval(ga.refresh, 25);
+	// 啟動鍵盤控制
+	document.onkeydown=ga.evt.keydown;
+	document.onkeyup=ga.evt.keyup;
+	// 建立飛機
+	ga.data.plane=new ga.lib.Plane();
+	ga.drawable.push(ga.data.plane);
+	// 切換畫面
+	document.getElementById("menu").style.display="none";
+	document.getElementById("main").style.display="block";
+};
+	ga.evt.keydown=function(e){
+		switch(e.keyCode){
+			case 65: // A
+				ga.control.enter=true;
+				break;
+			case 32: // 空白
+				ga.control.space=true;
+				break;
+			case 37: // 左
+				ga.control.left=true;
+				break;
+			case 38: // 上
+				ga.control.top=true;
+				break;
+			case 39: // 右
+				ga.control.right=true;
+				break;
+			case 40: // 下
+				ga.control.bottom=true;
+				break;
+		}
+	};
+	ga.evt.keyup=function(e){
+		switch(e.keyCode){
+			case 65: // A
+				ga.control.enter=false;
+				break;
+			case 32: // 空白
+				ga.control.space=false;
+				break;
+			case 37: // 左
+				ga.control.left=false;
+				break;
+			case 38: // 上
+				ga.control.top=false;
+				break;
+			case 39: // 右
+				ga.control.right=false;
+				break;
+			case 40: // 下
+				ga.control.bottom=false;
+				break;
+		}
+	};
+ga.refresh=function(){
+	// 清空畫面
+	ga.ctx.fillRect(0, 0, ga.ctx.canvas.width, ga.ctx.canvas.height);
+	// 加入子彈
+	if(ga.data.circle%2==0){
+		ga.drawable.push(new ga.lib.Missle());
+	}
+	// 更新資料
+	for(var i=0;i<ga.drawable.length;i++){
+		if(ga.drawable[i].update()){
+			ga.drawable.splice(i, 1);
+			i--;
+		}
+	}
+	// 重新繪製
+	for(var i=0;i<ga.drawable.length;i++){
+		ga.drawable[i].draw();
+	}
+	// 測試遊戲是否結束
+	if(ga.over){
+		window.clearInterval(ga.gameId);
+		return;
+	}
+	// 碰撞偵測
+	ga.checkGameover();
+	// 回合數加一
+	ga.data.circle++;
+};
+ga.checkGameover=function(){
+	var missle;
+	var plane=ga.data.plane;
+	for(var i=0;i<ga.drawable.length;i++){
+		missle=ga.drawable[i];
+		// 確定 missle 是 ga.lib.Missle 的物件
+		if(missle instanceof ga.lib.Missle){
+			var distance=Math.pow(missle.x-plane.x, 2)+
+				Math.pow(missle.y-plane.y, 2);
+			distance=Math.sqrt(distance);
+			if(distance<=(plane.size/2+missle.size)){
+				ga.gameover();
+				return; // 爆炸了，其他不管
+			}
+		}
+	}
+};
+ga.gameover=function(){
+	// 播放爆炸音效
+	ga.playSound(ga.res.sounds.explosion);
+	// 顯示爆炸效果
+	// (new ga.lib.Explosion()).draw();
+	ga.drawable.push(new ga.lib.Explosion());
+	// 標示遊戲結束
+	ga.over=true;
+	// 停止遊戲畫面
+	// window.clearInterval(ga.gameId);
+};
+// 飛機物件定義
+ga.lib.Plane=function(){
+	this.x=ga.ctx.canvas.width/2;
+	this.y=ga.ctx.canvas.height/2;
+	this.speed=2;
+	this.size=20;
+	this.fireSpeed=1;
+	this.update=function(){
+		// 速度和移動
+		if(ga.control.space){
+			this.speed=4;
+		}else{
+			this.speed=2;
+		}
+		if(ga.control.left){
+			this.x-=this.speed;
+		}
+		if(ga.control.top){
+			this.y-=this.speed;
+		}
+		if(ga.control.right){
+			this.x+=this.speed;
+		}
+		if(ga.control.bottom){
+			this.y+=this.speed;
+		}
+		// 發射子彈
+		if(ga.control.enter){
+			this.fire();
+		}
+		return false;
+	};
+	this.draw=function(){
+		ga.ctx.save();
+		ga.ctx.drawImage(ga.res.imgs.plane,
+			this.x-this.size/2, this.y-this.size/2,
+			this.size, this.size);
+		ga.ctx.restore();
+	};
+	this.fire=function(){
+		this.fireSpeed--;
+		if(this.fireSpeed==0){
+			var bullet=new ga.lib.Bullet();
+			ga.drawable.push(bullet);
+			this.fireSpeed=10;
+		}
+	};
+};
+ga.lib.Bullet=function(){
+	this.x=ga.data.plane.x;
+	this.y=ga.data.plane.y-10;
+	this.speed=4;
+	this.update=function(){
+		this.y-=this.speed;
+		return this.y<0;
+	};
+	this.draw=function(){
+		ga.ctx.save();
+		ga.ctx.fillStyle="white";
+		ga.ctx.beginPath();
+		ga.ctx.arc(this.x, this.y, 5, 0, 2*Math.PI);
+		ga.ctx.fill();
+		ga.ctx.restore();
+	};
+};
+ga.lib.Missle=function(){
+	var random=Math.random();
+	if(random<0.25){ // 左到右
+		this.x=0;
+		this.y=Math.random()*ga.ctx.canvas.height;
+		this.vx=Math.random()*2+1; // 1~3
+		this.vy=Math.random()*2-1; // -1~1
+	}else if(random<0.5){ // 下到上
+		this.x=Math.random()*ga.ctx.canvas.width;
+		this.y=ga.ctx.canvas.height;
+		this.vx=Math.random()*2-1; // -1~1
+		this.vy=Math.random()*2-4; // -1~-3
+	}else if(random<0.75){ // 右到左
+		this.x=ga.ctx.canvas.width;
+		this.y=Math.random()*ga.ctx.canvas.height;
+		this.vx=Math.random()*2-4; // -1~-3
+		this.vy=Math.random()*2-1; // -1~1
+	}else{ // 上到下
+		this.x=Math.random()*ga.ctx.canvas.width;
+		this.y=0;
+		this.vx=Math.random()*2-1; // -1~1
+		this.vy=Math.random()*2+1; // 1~3
+	}
+	this.size=2;
+	this.update=function(){
+		this.x+=this.vx;
+		this.y+=this.vy;
+		return (this.x<0||this.x>ga.ctx.canvas.width
+			||this.y<0||this.y>ga.ctx.canvas.height);
+	};
+	this.draw=function(){
+		ga.ctx.save();
+		ga.ctx.fillStyle="red";
+		ga.ctx.beginPath();
+		ga.ctx.arc(this.x, this.y, this.size, 0, 2*Math.PI);
+		ga.ctx.fill();
+		ga.ctx.restore();
+	};
+};
+ga.lib.Explosion=function(){
+	this.x=ga.data.plane.x;
+	this.y=ga.data.plane.y;
+	this.size=36;
+	this.update=function(){
+		return false;
+	};
+	this.draw=function(){
+		ga.ctx.save();
+		ga.ctx.drawImage(ga.res.imgs.explosion,
+			this.x-this.size/2, this.y-this.size/2, this.size, this.size);
+		ga.ctx.restore();
+	};
+};
+</script>
+</head>
+<body>
+<div id="loading">Loading ...</div>
+<div id="menu" style="display:none;">
+	<button onclick="ga.start();">Start</button>
+</div>
+<div id="main" style="display:none;">
+	<canvas id="cvs" width="600" height="450"></canvas>
+</div>
+</body>
+</html>
+
+
+
+
+
